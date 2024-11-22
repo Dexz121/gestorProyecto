@@ -5,110 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lista de Entregables</title>
     <link
+      rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- Grid.js CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css"
-      rel="stylesheet"
     />
   </head>
   <body>
     <div class="container my-4">
-      <!-- Encabezado -->
       <h1 class="text-center mb-4">Lista de Entregables</h1>
-
-      <!-- Mensaje de bienvenida -->
-      <p class="text-center">
-        Hola <strong>User</strong>, <br />
-        Bienvenido al gestor de entregables, a continuación podrás ver el listado de los entregables asignados a tu nombre.
-      </p>
-
-      <!-- Botones -->
       <div class="d-flex justify-content-between mb-3">
-        <button id="btnSeleccionar" class="btn btn-primary" disabled>Seleccionar</button>
-        <a href="/proyectos/entregable.html" class="btn btn-success">Nuevo entregable</a>
+        <button id="btnSeleccionar" class="btn btn-primary" disabled>
+          Seleccionar
+        </button>
+        <a href="/proyectos/entregable/" class="btn btn-success">
+          Nuevo entregable
+        </a>
       </div>
-
-      <!-- Contenedor de la tabla -->
-      <div id="entregablesTabla"></div>
+      <div id="tabla">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Asunto</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entregable in entregables %}
+            <tr>
+              <td>{{ entregable.id }}</td>
+              <td>{{ entregable.asunto }}</td>
+              <td>{{ entregable.estado }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center">No hay entregables registrados.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Grid.js JS -->
-    <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
-
-    <script>
-      // Datos de ejemplo para la tabla
-      const data = [
-        ["Proyecto A", "Pendiente", "Proyecto 1", "2024-11-01", "2024-11-10"],
-        ["Proyecto B", "En proceso", "Proyecto 2", "2024-11-05", "2024-11-15"],
-        ["Proyecto C", "Concluido", "Proyecto 3", "2024-10-01", "2024-10-10"],
-        ["Proyecto D", "En pruebas", "Proyecto 4", "2024-11-10", "2024-11-20"],
-      ];
-
-      // Crear la tabla dinámica con Grid.js
-      new gridjs.Grid({
-        columns: [
-          {
-            name: "",
-            formatter: (_, row) =>
-              gridjs.html(
-                `<input type="radio" name="selected" value="${row.cells[0].data}" />`
-              ),
-          },
-          "Asunto",
-          "Estado",
-          "Proyecto",
-          "Fecha de Inicio",
-          "Fecha de Entrega",
-        ],
-        data: data.map((row) => [
-          null, // Para los radio buttons
-          ...row, // Resto de los datos
-        ]),
-        search: true,
-        pagination: {
-          limit: 5,
-        },
-        sort: true,
-        className: {
-          table: "table table-striped",
-        },
-        language: {
-          search: {
-            placeholder: "Buscar entregables...",
-          },
-          pagination: {
-            previous: "Anterior",
-            next: "Siguiente",
-            showing: "Mostrando",
-            of: "de",
-            to: "a",
-            results: "resultados",
-          },
-        },
-      }).render(document.getElementById("entregablesTabla"));
-
-      // Activar/desactivar el botón Seleccionar según la fila seleccionada
-      document.addEventListener("change", (e) => {
-        const btnSeleccionar = document.getElementById("btnSeleccionar");
-        btnSeleccionar.disabled = !document.querySelector(
-          'input[name="selected"]:checked'
-        );
-      });
-
-      // Acción al presionar el botón Seleccionar
-      document.getElementById("btnSeleccionar").addEventListener("click", () => {
-        const selected = document.querySelector('input[name="selected"]:checked');
-        if (selected) {
-          const entregable = selected.value;
-          //alert(`Entregable seleccionado: ${entregable}`);
-          window.location.href = "/proyectos/entregable.html";
-        }
-      });
-    </script>
   </body>
 </html>
