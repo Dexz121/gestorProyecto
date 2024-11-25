@@ -27,7 +27,14 @@
           <!-- Asunto -->
           <div class="mb-3">
             <label for="asunto" class="form-label">Asunto</label>
-            <input type="text" id="asunto" class="form-control" required />
+            <input
+              type="text"
+              id="asunto"
+              class="form-control"
+              value="{{ entregable.asunto }}"
+              required
+            />
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
           </div>
 
           <!-- Estado y Horas -->
@@ -35,19 +42,25 @@
             <div class="col-md-6">
               <label for="estado" class="form-label">Estado</label>
               <select id="estado" class="form-select" required>
-                <option value="" disabled selected>Selecciona un estado</option>
-                <option>Descartado</option>
-                <option>Bloqueado</option>
-                <option>En análisis</option>
-                <option>Pendiente</option>
-                <option>En proceso</option>
-                <option>En pruebas</option>
-                <option>Concluido</option>
+                <option value="" disabled>Selecciona un estado</option>
+                <option value="Descartado" {% if entregable.estado == "Descartado" %}selected{% endif %}>Descartado</option>
+                <option value="Bloqueado" {% if entregable.estado == "Bloqueado" %}selected{% endif %}>Bloqueado</option>
+                <option value="En análisis" {% if entregable.estado == "En análisis" %}selected{% endif %}>En análisis</option>
+                <option value="Pendiente" {% if entregable.estado == "Pendiente" %}selected{% endif %}>Pendiente</option>
+                <option value="En proceso" {% if entregable.estado == "En proceso" %}selected{% endif %}>En proceso</option>
+                <option value="En pruebas" {% if entregable.estado == "En pruebas" %}selected{% endif %}>En pruebas</option>
+                <option value="Concluido" {% if entregable.estado == "Concluido" %}selected{% endif %}>Concluido</option>
               </select>
             </div>
             <div class="col-md-6">
               <label for="horas_estimadas" class="form-label">Horas estimadas</label>
-              <input type="number" id="horas_estimadas" class="form-control" required />
+              <input
+                type="number"
+                id="horas_estimadas"
+                class="form-control"
+                value="{{ entregable.horas_estimadas }}"
+                required
+              />
             </div>
           </div>
 
@@ -55,24 +68,58 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-              <input type="date" id="fecha_inicio" class="form-control" required />
+              <input
+                type="date"
+                id="fecha_inicio"
+                class="form-control"
+                value="{{ entregable.fecha_inicio }}"
+                required
+              />
             </div>
             <div class="col-md-6">
               <label for="fecha_finalizacion" class="form-label">Fecha de finalización</label>
-              <input type="date" id="fecha_finalizacion" class="form-control" required />
+              <input
+                type="date"
+                id="fecha_finalizacion"
+                class="form-control"
+                value="{{ entregable.fecha_finalizacion }}"
+                required
+              />
             </div>
+          </div>
+
+          <!-- Persona asignada -->
+          <div class="mb-3">
+            <label for="persona_asignada" class="form-label">Persona asignada</label>
+            <input
+              type="number"
+              id="persona_asignada"
+              class="form-control"
+              value="{{ entregable.persona_asignada }}"
+              required
+            />
           </div>
 
           <!-- Descripción -->
           <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción del entregable</label>
-            <textarea id="descripcion" class="form-control" rows="3"></textarea>
+            <textarea
+              id="descripcion"
+              class="form-control"
+              rows="3"
+              required
+            >{{ entregable.descripcion }}</textarea>
           </div>
 
           <!-- Comentarios -->
           <div class="mb-3">
-            <label for="comentarios" class="form-label">Comentarios de la solución/desarrollo</label>
-            <textarea id="comentarios" class="form-control" rows="3"></textarea>
+            <label for="comentarios" class="form-label">Comentarios</label>
+            <textarea
+              id="comentarios"
+              class="form-control"
+              rows="3"
+              required
+            >{{ entregable.comentarios }}</textarea>
           </div>
         </form>
       </div>
@@ -88,7 +135,49 @@
       }
 
       function actualizarEntregable() {
-        alert("Entregable actualizado correctamente.");
+        // Obtén el ID del registro actual (puedes definirlo en tu backend)
+        const entregableId = "{{ entregable.id }}";
+    
+        // Recopila los datos del formulario
+        const data = {
+          asunto: document.getElementById("asunto").value,
+          estado: document.getElementById("estado").value,
+          horas_estimadas: document.getElementById("horas_estimadas").value,
+          fecha_inicio: document.getElementById("fecha_inicio").value,
+          fecha_finalizacion: document.getElementById("fecha_finalizacion").value,
+          descripcion: document.getElementById("descripcion").value,
+          comentarios: document.getElementById("comentarios").value,
+          persona_asignada: document.getElementById("persona_asignada").value,
+        };
+        fetch(`/proyectos/entregable/actualizar/${entregableId}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: new URLSearchParams({
+            asunto: document.getElementById("asunto").value,
+            estado: document.getElementById("estado").value,
+            horas_estimadas: document.getElementById("horas_estimadas").value,
+            fecha_inicio: document.getElementById("fecha_inicio").value,
+            fecha_finalizacion: document.getElementById("fecha_finalizacion").value,
+            descripcion: document.getElementById("descripcion").value,
+            comentarios: document.getElementById("comentarios").value,
+            persona_asignada: document.getElementById("persona_asignada").value,
+          }),
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.success) {
+              alert(result.message);
+            } else {
+              alert("Error: " + result.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Ocurrió un error al actualizar el entregable.");
+          });
       }
 
       function volverLista() {

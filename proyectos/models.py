@@ -14,9 +14,9 @@ class Entregable(models.Model):
     proyecto = models.CharField(max_length=255) 
     horas_estimadas = models.IntegerField()
     horas_abarcadas = models.IntegerField()
-    fecha_inicio = models.DateField()
+    fecha_inicio = models.DateField(null=True, blank=True)
     fecha_entrega = models.DateField(null=True, blank=True)  # Nuevo campo
-    fecha_finalizacion = models.DateField()
+    fecha_finalizacion = models.DateField(null=True, blank=True)
     descripcion = models.TextField()
     comentarios = models.TextField()
     persona_asignada = models.IntegerField()
