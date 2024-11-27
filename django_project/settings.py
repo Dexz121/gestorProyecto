@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = "home" #new
+LOGOUT_REDIRECT_URL = "home"
 
 # Application definition
 
@@ -56,7 +58,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'proyectos/templates',
+            BASE_DIR / 'templates',
             ],
         'APP_DIRS': True,
         'OPTIONS': {
